@@ -62,7 +62,7 @@ resource "aws_lb_listener" "http" {
   default_action {
     type = "fixed-response"
 
-    fix_response {
+    fixed_response {
       content_type = "text/plain"
       message_body = "404: page not found"
       status_code  = 404
@@ -83,8 +83,8 @@ resource "aws_security_group" "alb" {
 
   # Allow all outbound requests
   egress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 0
+    to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -111,7 +111,7 @@ resource "aws_lb_listener_rule" "asg" {
   listener_arn = aws_lb_listener.http.arn
   priority     = 100
 
-  conditon {
+  condition {
     field = "path-pattern"
     values = ["*"]
   }
