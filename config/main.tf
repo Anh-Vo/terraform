@@ -107,6 +107,21 @@ resource "aws_lb_target_group" "asg" {
   }
 }
 
+resource "aws_lb_listener_rule" "asg" {
+  listener_arn = aws_lb_listener.http.arn
+  priority     = 100
+
+  conditon {
+    field = "path-pattern"
+    values = ["*"]
+  }
+
+  action {
+    type      = "forward"
+    target_group_arn = aws_lb_target_group.asg.arn
+  }
+}
+
 data "aws_vpc" "default" {
   default = true
 }
@@ -122,8 +137,8 @@ variable "server_port" {
 }
 
 
-output "public_ip" {
-  value       = aws_instance.example.public_ip
-  description = "The public IP address of the web server"
+output "alb_dns_name" {
+  value       = aws_lb.example.dns_name
+  description = "The domain name of the load balancer" 
 }
 
